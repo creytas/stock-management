@@ -83,18 +83,35 @@ const InvoiceForm = () => {
   }, [articles]);
 
   return (
-    <div>
+    <div className="text-gray-400 border border-blue-950">
       <form id="invoice-form">
         {/* ... autres champs de la facture */}
-        <h2>Articles</h2>
-        {/* <div className="grid grid-cols-4 gap-4">
-          <div className="font-bold">Nom de l'article</div>
-          <div className="font-bold">Quantité</div>
-          <div className="font-bold">Prix unitaire</div>
-          <div className="font-bold">Actions</div>
-        </div> */}
+        <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="flex items-center space-x-2">
+            <label className="font-bold">N</label>
+            <input type="text" />
+          </div>
+          <div className="flex items-center space-x-2">
+            <label className="font-bold">Date</label>
+            <input type="date" />
+          </div>
+        </div>
+        <div className="flex">
+          <div></div>
+          <div></div>
+        </div>
+        <div className="grid grid-cols-4 gap-4 p-3 border-x-2 border-t-2 border-blue-500 bg-blue-400 text-gray-200">
+          <label className="font-bold">Nom de l'article</label>
+          <label className="font-bold">Quantité</label>
+          <label className="font-bold">Prix unitaire</label>
+        </div>
         {articles.map((article, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            className={`input-row grid grid-cols-4 gap-4 p-3 ${
+              index + 1 === articles.length ? "border-b-2" : "border-y-0"
+            } border-x-2 border-blue-500`}
+          >
             <input
               type="text"
               value={article.name}
@@ -139,12 +156,19 @@ const InvoiceForm = () => {
             )}
           </div>
         ))}
-        <button type="button" onClick={handleAddArticle}>
-          Ajouter un article
-        </button>
+        <div className="w-full py-4 flex items-center justify-center">
+          <button
+            className="w-[74.5%] my-2 py-1 border border-dashed border-gray-500 bg-gray-200 text-gray-600"
+            type="button"
+            onClick={handleAddArticle}
+          >
+            Ajouter un article
+          </button>
+        </div>
+
         {/* ... autres champs de la facture */}
         <div>
-          <label>Taux de taxe (%)</label>
+          <label className="font-bold">Taux de taxe (%)</label>
           <input
             type="text"
             value={taxRate}
@@ -159,7 +183,7 @@ const InvoiceForm = () => {
           />
         </div>
         <div>
-          <label>Remise (%)</label>
+          <label className="font-bold">Remise (%)</label>
           <input
             type="text"
             value={discount}
@@ -174,7 +198,7 @@ const InvoiceForm = () => {
           />
         </div>
         <div>
-          <strong>Total: {calculateTotal()} €</strong>
+          <strong>Total: {calculateTotal()} CDF</strong>
         </div>
       </form>
       <button
@@ -186,7 +210,7 @@ const InvoiceForm = () => {
         }`}
         disabled={isPrintButtonDisabled}
       >
-        Imprimer en PDF
+        Imprimer Facture
       </button>
     </div>
   );
