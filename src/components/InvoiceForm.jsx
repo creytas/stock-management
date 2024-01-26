@@ -83,24 +83,27 @@ const InvoiceForm = () => {
   }, [articles]);
 
   return (
-    <div className="text-gray-400 border border-blue-950">
+    <div className="text-gray-500">
       <form id="invoice-form">
         {/* ... autres champs de la facture */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          <div className="flex items-center space-x-2">
-            <label className="font-bold">N</label>
-            <input type="text" />
+          <div className="h-[44px] flex items-center space-x-2">
+            <label className="font-bold">ID</label>
+            <input
+              type="text"
+              className="outline-none border rounded p-[3px]"
+            />
           </div>
           <div className="flex items-center space-x-2">
             <label className="font-bold">Date</label>
-            <input type="date" />
+            <input type="date" className="outline-none border rounded py-1" />
           </div>
         </div>
         <div className="flex">
           <div></div>
           <div></div>
         </div>
-        <div className="grid grid-cols-4 gap-4 p-3 border-x-2 border-t-2 border-blue-500 bg-blue-400 text-gray-200">
+        <div className="grid grid-cols-4 gap-4 p-2 border-x-2 border-t-2 border-blue-500 bg-blue-400 text-gray-200">
           <label className="font-bold">Nom de l'article</label>
           <label className="font-bold">Quantité</label>
           <label className="font-bold">Prix unitaire</label>
@@ -108,7 +111,7 @@ const InvoiceForm = () => {
         {articles.map((article, index) => (
           <div
             key={index}
-            className={`input-row grid grid-cols-4 gap-4 p-3 ${
+            className={`input-row grid grid-cols-4 gap-4 h-[44px] p-2 ${
               index + 1 === articles.length ? "border-b-2" : "border-y-0"
             } border-x-2 border-blue-500`}
           >
@@ -120,6 +123,7 @@ const InvoiceForm = () => {
               }
               placeholder="Nom de l'article"
               required
+              className="outline-none"
             />
             <input
               type="text"
@@ -134,6 +138,7 @@ const InvoiceForm = () => {
                 )
               }
               placeholder="Quantité"
+              className="outline-none"
             />
             <input
               type="text"
@@ -148,6 +153,7 @@ const InvoiceForm = () => {
                 )
               }
               placeholder="Prix unitaire"
+              className="outline-none"
             />
             {index > 0 && (
               <button type="button" onClick={() => handleRemoveArticle(index)}>
@@ -158,7 +164,7 @@ const InvoiceForm = () => {
         ))}
         <div className="w-full py-4 flex items-center justify-center">
           <button
-            className="w-[74.5%] my-2 py-1 border border-dashed border-gray-500 bg-gray-200 text-gray-600"
+            className="w-[74.5%] h-[42px] my-2 py-1 border border-dashed border-gray-500 bg-gray-200 text-gray-600"
             type="button"
             onClick={handleAddArticle}
           >
@@ -167,7 +173,7 @@ const InvoiceForm = () => {
         </div>
 
         {/* ... autres champs de la facture */}
-        <div>
+        <div className="flex items-center space-x-2 my-4">
           <label className="font-bold">Taux de taxe (%)</label>
           <input
             type="text"
@@ -180,9 +186,10 @@ const InvoiceForm = () => {
               )
             }
             placeholder="Taux de taxe"
+            className="outline-none border rounded p-[3px]"
           />
         </div>
-        <div>
+        <div className="flex items-center space-x-12 my-4">
           <label className="font-bold">Remise (%)</label>
           <input
             type="text"
@@ -195,23 +202,49 @@ const InvoiceForm = () => {
               )
             }
             placeholder="Remise"
+            className="outline-none border rounded p-[3px]"
           />
+        </div>
+        <div className="mb-4">
+          <strong className="font-medium italic">
+            {`Sous-Total:
+            ${articles
+              .reduce(
+                (acc, article) => acc + article.quantity * article.price,
+                0
+              )
+              .toFixed(2)}
+            CDF`}
+          </strong>
         </div>
         <div>
           <strong>Total: {calculateTotal()} CDF</strong>
         </div>
       </form>
-      <button
-        onClick={handleShowInvoice}
-        className={`mr-4 p-2 ${
-          isPrintButtonDisabled
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-blue-500 text-white"
-        }`}
-        disabled={isPrintButtonDisabled}
-      >
-        Imprimer Facture
-      </button>
+      <div className="w-full flex items-center space-x-4">
+        <button
+          onClick={handleShowInvoice}
+          className={`mr-4 my-8 p-2 ${
+            isPrintButtonDisabled
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
+          disabled={isPrintButtonDisabled}
+        >
+          Imprimer Facture
+        </button>
+        <button
+          onClick={handleShowInvoice}
+          className={`mr-4 my-8 p-2 ${
+            isPrintButtonDisabled
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
+          disabled={isPrintButtonDisabled}
+        >
+          Exporter Facture
+        </button>
+      </div>
     </div>
   );
 };
