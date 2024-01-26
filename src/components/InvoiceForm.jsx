@@ -1,5 +1,11 @@
 // components/InvoiceForm.js
 import React, { useState, useEffect } from "react";
+import {
+  MdOutlineAddShoppingCart,
+  MdOutlineDeleteForever,
+  MdOutlinePrint,
+  MdOutlineDownloading,
+} from "react-icons/md";
 import { InvoiceDetail } from "./form/InvoiceDetail";
 // import html2pdf from "html2pdf.js";
 
@@ -160,18 +166,24 @@ const InvoiceForm = () => {
               className="outline-none"
             />
             {index > 0 && (
-              <button type="button" onClick={() => handleRemoveArticle(index)}>
-                Supprimer
+              <button
+                type="button"
+                onClick={() => handleRemoveArticle(index)}
+                className="flex items-center justify-center font-semibold text-red-500 text-opacity-65 hover:text-opacity-100"
+              >
+                <MdOutlineDeleteForever />
+                Retirer
               </button>
             )}
           </div>
         ))}
         <div className="w-full py-4 flex items-center justify-center">
           <button
-            className="w-[74.5%] h-[42px] my-2 py-1 border border-dashed border-gray-500 bg-gray-200 text-gray-600"
+            className="w-[74.5%] h-[42px] flex items-center justify-center my-2 py-1 border border-dashed border-gray-500 bg-gray-200 font-semibold text-gray-600  text-opacity-65 hover:text-opacity-100"
             type="button"
             onClick={handleAddArticle}
           >
+            <MdOutlineAddShoppingCart />
             Ajouter un article
           </button>
         </div>
@@ -228,24 +240,26 @@ const InvoiceForm = () => {
       <div className="w-full flex items-center space-x-4">
         <button
           onClick={handleShowInvoice}
-          className={`mr-4 my-8 p-2 ${
+          className={`flex items-center justify-center mr-4 my-8 p-2 font-semibold ${
             isPrintButtonDisabled
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              ? "bg-gray-300 text-gray-600 text-opacity-75 cursor-not-allowed"
+              : "bg-blue-500 bg-opacity-75 text-white hover:bg-opacity-100"
           }`}
           disabled={isPrintButtonDisabled}
         >
+          <MdOutlinePrint />
           Imprimer Facture
         </button>
         <button
           onClick={handleShowInvoice}
-          className={`mr-4 my-8 p-2 ${
+          className={`flex items-center justify-center mr-4 my-8 p-2 font-semibold ${
             isPrintButtonDisabled
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              ? "bg-gray-300 text-gray-600 text-opacity-75 cursor-not-allowed"
+              : "bg-blue-500 bg-opacity-75 text-white hover:bg-opacity-100"
           }`}
           disabled={isPrintButtonDisabled}
         >
+          <MdOutlineDownloading />
           Exporter Facture
         </button>
       </div>
