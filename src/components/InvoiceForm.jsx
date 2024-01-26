@@ -1,5 +1,6 @@
 // components/InvoiceForm.js
 import React, { useState, useEffect } from "react";
+import { InvoiceDetail } from "./form/InvoiceDetail";
 // import html2pdf from "html2pdf.js";
 
 const InvoiceForm = () => {
@@ -86,22 +87,25 @@ const InvoiceForm = () => {
     <div className="text-gray-500">
       <form id="invoice-form">
         {/* ... autres champs de la facture */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-4 mb-4">
           <div className="h-[44px] flex items-center space-x-2">
             <label className="font-bold">ID</label>
             <input
               type="text"
-              className="outline-none border rounded p-[3px]"
+              className="w-[80%] outline-none border rounded p-[3px]"
             />
           </div>
           <div className="flex items-center space-x-2">
             <label className="font-bold">Date</label>
-            <input type="date" className="outline-none border rounded py-1" />
+            <input
+              type="date"
+              className="w-[65%] outline-none border rounded py-1"
+            />
           </div>
         </div>
         <div className="flex">
-          <div></div>
-          <div></div>
+          <InvoiceDetail involved="Fournisseur" />
+          <InvoiceDetail involved="Client" />
         </div>
         <div className="grid grid-cols-4 gap-4 p-2 border-x-2 border-t-2 border-blue-500 bg-blue-400 text-gray-200">
           <label className="font-bold">Nom de l'article</label>
