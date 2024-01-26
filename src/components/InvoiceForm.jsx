@@ -45,6 +45,10 @@ const InvoiceForm = () => {
       articles,
       taxRate,
       discount,
+      subTotal: articles.reduce(
+        (acc, article) => acc + article.quantity * article.price,
+        0
+      ),
       total: calculateTotal(),
     };
     setDailyInvoices([...dailyInvoices, invoiceData]);
@@ -62,6 +66,7 @@ const InvoiceForm = () => {
       { header: "Articles", key: "articles", width: 40 },
       { header: "Tax Rate", key: "taxRate", width: 15 },
       { header: "Discount", key: "discount", width: 15 },
+      { header: "Sous-Total", key: "subTotal", width: 15 },
       { header: "Total", key: "total", width: 15 },
     ];
 
