@@ -1,5 +1,8 @@
 // components/InvoiceForm.js
 import React, { useState, useEffect } from "react";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+
 import {
   MdOutlineAddShoppingCart,
   MdOutlineDeleteForever,
@@ -17,6 +20,16 @@ const InvoiceForm = () => {
   };
 
   const [invoiceId, setInvoiceId] = useState(generateInvoiceId());
+  const today = new Date();
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const [dateTime, setDateTime] = useState(today);
+  const [invoiceDate, setInvoiceDate] = useState(formatDate(today));
   const initialArticleState = { name: "", quantity: 1, price: 0 };
   const [articles, setArticles] = useState([initialArticleState]);
   const [taxRate, setTaxRate] = useState(0);
@@ -26,10 +39,9 @@ const InvoiceForm = () => {
   const [dailyInvoices, setDailyInvoices] = useState([]);
 
   const handleShowInvoice = () => {
-    const currentDateTime = new Date().toLocaleString();
     const invoiceData = {
-      dateTime: currentDateTime,
-      id: generateInvoiceId(),
+      invoiceDate: dateTime,
+      invoiceId: generateInvoiceId(),
       articles,
       taxRate,
       discount,
@@ -40,10 +52,40 @@ const InvoiceForm = () => {
     resetFields();
   };
 
+  const exportToXLSX = () => {
+    const today = new Date().toLocaleDateString().replace(/\//g, "-");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(`DailyInvoices_${today}`);
+    worksheet.columns = [
+      { header: "Date", key: "invoiceDate", width: 20 },
+      { header: "Invoice Id", key: "invoiceId", width: 20 },
+      { header: "Articles", key: "articles", width: 40 },
+      { header: "Tax Rate", key: "taxRate", width: 15 },
+      { header: "Discount", key: "discount", width: 15 },
+      { header: "Total", key: "total", width: 15 },
+    ];
+
+    dailyInvoices.forEach((invoice) => {
+      worksheet.addRow(invoice);
+    });
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "daily_invoices");
+    });
+  };
   //   const handlePrint = () => {
   //     const element = document.getElementById("invoice-form");
   //     html2pdf(element);
   //   };
+  const handleDateChange = (e) => {
+    const newDate = new Date(e.target.value);
+    newDate.setHours(today.getHours(), today.getMinutes(), today.getSeconds());
+    setInvoiceDate(e.target.value);
+    setDateTime(newDate);
+  };
 
   const handleAddArticle = () => {
     setArticles([...articles, { name: "", quantity: 1, price: 0 }]);
@@ -93,6 +135,8 @@ const InvoiceForm = () => {
 
   const resetFields = () => {
     setInvoiceId(generateInvoiceId());
+    setInvoiceDate(formatDate(today));
+    setDateTime(today);
     setArticles([initialArticleState]);
     setTaxRate(0);
     setDiscount(0);
@@ -128,6 +172,8 @@ const InvoiceForm = () => {
           <div className="flex items-center space-x-2">
             <label className="font-bold">Date</label>
             <input
+              value={invoiceDate}
+              onChange={handleDateChange}
               type="date"
               className="w-[65%] outline-none border rounded py-1"
             />
@@ -275,7 +321,7 @@ const InvoiceForm = () => {
           Imprimer Facture
         </button>
         <button
-          onClick={handleShowInvoice}
+          onClick={exportToXLSX}
           className={`flex items-center justify-center mr-4 my-8 p-2 font-semibold ${
             isPrintButtonDisabled
               ? "bg-gray-300 text-gray-600 text-opacity-75 cursor-not-allowed"
