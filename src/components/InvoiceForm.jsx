@@ -10,24 +10,34 @@ import { InvoiceDetail } from "./form/InvoiceDetail";
 // import html2pdf from "html2pdf.js";
 
 const InvoiceForm = () => {
-  const [articles, setArticles] = useState([
-    { name: "", quantity: 1, price: 0 },
-  ]);
+  const generateInvoiceId = () => {
+    const prefix = "PROFACT-";
+    const randomPart = Math.random().toString(36).substr(2, 6).toUpperCase(); // Génère une chaîne aléatoire de 6 caractères
+    return prefix + randomPart;
+  };
+
+  const [invoiceId, setInvoiceId] = useState(generateInvoiceId());
+  const initialArticleState = { name: "", quantity: 1, price: 0 };
+  const [articles, setArticles] = useState([initialArticleState]);
   const [taxRate, setTaxRate] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [isPrintButtonDisabled, setPrintButtonDisabled] = useState(true);
   const [isDeleteButtonHidden, setDeleteButtonHidden] = useState(false);
+  const [dailyInvoices, setDailyInvoices] = useState([]);
 
   const handleShowInvoice = () => {
+    const currentDateTime = new Date().toLocaleString();
     const invoiceData = {
+      dateTime: currentDateTime,
+      id: generateInvoiceId(),
       articles,
       taxRate,
       discount,
       total: calculateTotal(),
     };
-
-    // Affiche les données JSON dans une boîte de dialogue
-    alert(JSON.stringify(invoiceData, null, 2));
+    setDailyInvoices([...dailyInvoices, invoiceData]);
+    alert("IMPRESSION REUSSIE...");
+    resetFields();
   };
 
   //   const handlePrint = () => {
@@ -81,6 +91,14 @@ const InvoiceForm = () => {
     return /^\d*\.?\d+$/.test(value) && parseFloat(value) >= 0;
   };
 
+  const resetFields = () => {
+    setInvoiceId(generateInvoiceId());
+    setArticles([initialArticleState]);
+    setTaxRate(0);
+    setDiscount(0);
+    setDeleteButtonHidden(true);
+  };
+
   useEffect(() => {
     // Mettre à jour la validation du bouton d'impression
     const isAnyArticleNameEmpty = articles.some(
@@ -88,6 +106,11 @@ const InvoiceForm = () => {
     );
     setPrintButtonDisabled(isAnyArticleNameEmpty);
   }, [articles]);
+
+  useEffect(() => {
+    const today = new Date().toLocaleDateString();
+    localStorage.setItem(today, JSON.stringify(dailyInvoices));
+  }, [dailyInvoices]);
 
   return (
     <div className="text-gray-500">
@@ -97,6 +120,7 @@ const InvoiceForm = () => {
           <div className="h-[44px] flex items-center space-x-2">
             <label className="font-bold">ID</label>
             <input
+              value={invoiceId}
               type="text"
               className="w-[80%] outline-none border rounded p-[3px]"
             />
