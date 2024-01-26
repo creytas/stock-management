@@ -41,7 +41,7 @@ const InvoiceForm = () => {
   const handleShowInvoice = () => {
     const invoiceData = {
       invoiceDate: dateTime,
-      invoiceId: generateInvoiceId(),
+      invoiceId,
       articles,
       taxRate,
       discount,
@@ -57,9 +57,22 @@ const InvoiceForm = () => {
   };
 
   const exportToXLSX = () => {
-    const today = new Date().toLocaleDateString().replace(/\//g, "-");
+    const invoiceData = [
+      {
+        invoiceDate: dateTime,
+        invoiceId,
+        articles,
+        taxRate,
+        discount,
+        subTotal: articles.reduce(
+          (acc, article) => acc + article.quantity * article.price,
+          0
+        ),
+        total: calculateTotal(),
+      },
+    ];
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet(`DailyInvoices_${today}`);
+    const worksheet = workbook.addWorksheet(`Invoice_${invoiceId}`);
     worksheet.columns = [
       { header: "Date", key: "invoiceDate", width: 20 },
       { header: "Invoice Id", key: "invoiceId", width: 20 },
@@ -70,15 +83,15 @@ const InvoiceForm = () => {
       { header: "Total", key: "total", width: 15 },
     ];
 
-    dailyInvoices.forEach((invoice) => {
-      worksheet.addRow(invoice);
+    invoiceData.forEach((item) => {
+      worksheet.addRow(item);
     });
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      saveAs(blob, "daily_invoices");
+      saveAs(blob, "invoice");
     });
   };
   //   const handlePrint = () => {
@@ -171,6 +184,7 @@ const InvoiceForm = () => {
             <input
               value={invoiceId}
               type="text"
+              readOnly
               className="w-[80%] outline-none border rounded p-[3px]"
             />
           </div>
