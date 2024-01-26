@@ -21,7 +21,7 @@ export const InvoiceDetail = ({ involved, setData }) => {
           <input
             type="text"
             placeholder="Adresse"
-            className="w-[92c%] outline-none border rounded p-[3px]"
+            className="w-[92%] outline-none border rounded p-[3px]"
           />
         </div>
         <div className="h-[44px] flex items-center space-x-2">
