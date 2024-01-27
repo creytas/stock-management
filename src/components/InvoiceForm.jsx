@@ -13,15 +13,30 @@ import { InvoiceDetail } from "./form/InvoiceDetail";
 // import html2pdf from "html2pdf.js";
 
 const InvoiceForm = () => {
+  const initialCustomerState = {
+    name: "",
+    company: "",
+    adress: "",
+    tel: "",
+    email: "",
+  };
+  const initialSupplierState = {
+    name: "",
+    company: "",
+    adress: "",
+    tel: "",
+    email: "",
+  };
+  const initialArticleState = { name: "", quantity: 1, price: 0 };
+
   const generateInvoiceId = () => {
     const prefix = "PROFACT-";
     const randomPart = Math.random().toString(36).substr(2, 6).toUpperCase(); // Génère une chaîne aléatoire de 6 caractères
     return prefix + randomPart;
   };
-
   const [invoiceId, setInvoiceId] = useState(generateInvoiceId());
-  const today = new Date();
 
+  const today = new Date();
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -30,7 +45,9 @@ const InvoiceForm = () => {
   };
   const [dateTime, setDateTime] = useState(today);
   const [invoiceDate, setInvoiceDate] = useState(formatDate(today));
-  const initialArticleState = { name: "", quantity: 1, price: 0 };
+
+  const [supplier, setSupplier] = useState([initialSupplierState]);
+  const [customer, setCustomer] = useState([initialCustomerState]);
   const [articles, setArticles] = useState([initialArticleState]);
   const [taxRate, setTaxRate] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -42,6 +59,8 @@ const InvoiceForm = () => {
     const invoiceData = {
       invoiceDate: dateTime,
       invoiceId,
+      supplier,
+      customer,
       articles,
       taxRate,
       discount,
@@ -61,6 +80,8 @@ const InvoiceForm = () => {
       {
         invoiceDate: dateTime,
         invoiceId,
+        supplier,
+        customer,
         articles,
         taxRate,
         discount,
@@ -76,6 +97,8 @@ const InvoiceForm = () => {
     worksheet.columns = [
       { header: "Date", key: "invoiceDate", width: 20 },
       { header: "Invoice Id", key: "invoiceId", width: 20 },
+      { header: "Fournisseur", key: "supplier", width: 40 },
+      { header: "Client", key: "customer", width: 40 },
       { header: "Articles", key: "articles", width: 40 },
       { header: "Tax Rate", key: "taxRate", width: 15 },
       { header: "Discount", key: "discount", width: 15 },
@@ -156,6 +179,8 @@ const InvoiceForm = () => {
     setInvoiceDate(formatDate(today));
     setDateTime(today);
     setArticles([initialArticleState]);
+    setCustomer([initialCustomerState]);
+    setSupplier([initialSupplierState]);
     setTaxRate(0);
     setDiscount(0);
     setDeleteButtonHidden(true);
@@ -199,8 +224,18 @@ const InvoiceForm = () => {
           </div>
         </div>
         <div className="flex">
-          <InvoiceDetail involved="Fournisseur" />
-          <InvoiceDetail involved="Client" />
+          <InvoiceDetail
+            involved="Fournisseur"
+            data={supplier}
+            setData={setSupplier}
+            setPrintButtonDisabled={setPrintButtonDisabled}
+          />
+          <InvoiceDetail
+            involved="Client"
+            data={customer}
+            setData={setCustomer}
+            setPrintButtonDisabled={setPrintButtonDisabled}
+          />
         </div>
         <div className="grid grid-cols-4 gap-4 p-2 border-x-2 border-t-2 border-blue-500 bg-blue-400 text-gray-200">
           <label className="font-bold">Nom de l'article</label>

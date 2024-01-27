@@ -13,6 +13,8 @@ const exportToXLSX = (data, title) => {
   worksheet.columns = [
     { header: "Date", key: "invoiceDate", width: 20 },
     { header: "Invoice Id", key: "invoiceId", width: 20 },
+    { header: "Fournisseur", key: "supplier", width: 40 },
+    { header: "Client", key: "customer", width: 40 },
     { header: "Articles", key: "articles", width: 40 },
     { header: "Tax Rate", key: "taxRate", width: 15 },
     { header: "Discount", key: "discount", width: 15 },
