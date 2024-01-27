@@ -26,6 +26,16 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+.input-row>input:hover{
+
+  color: black;
+  border: 1px solid rgba(197, 197, 197, 0.466);
+  border-radius: 4px;
+  /* outline: none; */
+  /* padding: 4px; */
+  /* margin: 4px 0px; */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
